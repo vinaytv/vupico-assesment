@@ -1,0 +1,165 @@
+openapi: 3.0.3
+info:
+  title: Assessment Spring AI Demo
+  version: 0.0.1
+  description: API spec for RAG, ticket classification, and LLM gateway endpoints.
+servers:
+  - url: http://localhost:8080
+paths:
+  /ask:
+    post:
+      summary: RAG question answering
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AskRequest'
+      responses:
+        '200':
+          description: RAG answer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AskResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '502':
+          description: LLM error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '503':
+          description: LLM unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /classify:
+    post:
+      summary: Classify support ticket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TicketClassificationRequest'
+      responses:
+        '200':
+          description: Classification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketClassificationResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '502':
+          description: LLM error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '503':
+          description: LLM unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+  /generate:
+    post:
+      summary: Generate from gateway
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+      responses:
+        '200':
+          description: Gateway response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenerateResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '502':
+          description: LLM error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '503':
+          description: LLM unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+components:
+  schemas:
+    AskRequest:
+      type: object
+      required: [question]
+      properties:
+        question:
+          type: string
+          example: What is Spring AI?
+    AskResponse:
+      type: object
+      properties:
+        answer:
+          type: string
+        sources:
+          type: array
+          items:
+            type: string
+    TicketClassificationRequest:
+      type: object
+      required: [text]
+      properties:
+        text:
+          type: string
+          example: Customer charged twice on credit card
+    TicketClassificationResponse:
+      type: object
+      properties:
+        category:
+          type: string
+          enum: [BILLING, TECHNICAL, GENERAL]
+        rationale:
+          type: string
+    GenerateRequest:
+      type: object
+      required: [prompt]
+      properties:
+        prompt:
+          type: string
+          example: Summarize Spring AI in one sentence.
+    GenerateResponse:
+      type: object
+      properties:
+        provider:
+          type: string
+          example: ollama
+        response:
+          type: string
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: string
+        detail:
+          type: string
