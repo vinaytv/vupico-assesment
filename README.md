@@ -22,6 +22,27 @@ You can override these with environment variables:
 - `OLLAMA_CHAT_MODEL`
 - `OLLAMA_EMBED_MODEL`
 
+## Switching LLM Providers
+By default the app uses Ollama (`LLM_PROVIDER=ollama`). To switch providers:
+
+- **Ollama** (default): set `LLM_PROVIDER=ollama`
+  - Optional overrides: `OLLAMA_CHAT_MODEL`, `OLLAMA_EMBED_MODEL`
+- **OpenAI**: set `LLM_PROVIDER=openai` and provide `OPENAI_API_KEY`
+- **Local stub** (no external calls): set `LLM_PROVIDER=local`
+
+Examples:
+```bash
+# Ollama (default)
+export LLM_PROVIDER=ollama
+
+# OpenAI
+export LLM_PROVIDER=openai
+export OPENAI_API_KEY=your-key
+
+# Local stub
+export LLM_PROVIDER=local
+```
+
 ## Run Locally (Docker Compose)
 1. Make sure Rancher Desktop or Docker is running with enough memory.
 2. Start the stack:
